@@ -1,8 +1,30 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
+from fastapi.responses import JSONResponse
 import pandas as pd
 
 app = FastAPI()
 df = pd.read_csv("banks.csv")
+
+@app.exception_handler(404) #if any page that doesnt exist is accessed
+def not_found_exception(request: Request, exc: HTTPException):
+    return JSONResponse(status_code=404,
+        content={
+            "error": "Endpoint not found",
+            "message": f"The requested URL {request.url.path} doesn't exist",
+            "valid_endpoints": [
+                "/banks",
+                "/banks/ifsc={ifsc_code}",
+                "/banks/bank_id={bank_id}",
+                "/docs"]
+        },
+    )
+
+@app.get("/")
+def home(): #home page
+    return JSONResponse(content={"/banks":"For all entries",
+            "/banks/ifsc={ifsc code here}":"For banks with specified ifsc code",
+            "/banks/bank_id={bank id here}":"For banks with specified bank id",
+            "/docs":"UI experience"})
 
 @app.get("/banks") #for entering limit endpoint is like /banks?limit=500
 def get_all_banks(limit: str = '100'): #returns upto "limit" number of entries
