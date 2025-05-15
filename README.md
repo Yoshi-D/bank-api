@@ -2,5 +2,6 @@ This is an API used to fetch bank details from the database, which is a huge csv
 This uses fastapi and pandas.
 
 Render url: https://yashs-bank-api.onrender.com
+(go to /docs to try all of the endpoints)
 
 In the future, I could add API key authentication. Open to any contributions.
